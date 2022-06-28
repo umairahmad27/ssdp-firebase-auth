@@ -1,10 +1,10 @@
 import './App.scss';
-import Login from './pages/Login';
+import AddUser from './pages/AddUser';
 
 function App() {
   return (
     <>
-      <Login />
+      <AddUser />
     </>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
+import { signInWithEmailAndPassword, onAuthStateChanged, signOut, updateProfile, sendEmailVerification } from "firebase/auth";
 import { auth } from "../config/firebase"
 
 const initialState = { email: "", password: "" }
@@ -54,6 +54,44 @@ export default function Login() {
             });
     }
 
+    const handleLogout = () => {
+        signOut(auth)
+            .then(() => {
+                console.log("User has been loggedout")
+                setUser({})
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }
+
+    const showAuthUser = () => {
+        console.log(auth.currentUser)
+    }
+    const handleUpdateProfile = () => {
+        updateProfile(auth.currentUser, {
+            displayName: "Nouman"
+        }).then(() => {
+            console.log("Profile updated!")
+            // ...
+        }).catch((error) => {
+            console.error(error)
+            // An error occurred
+            // ...
+        });
+    }
+
+    const handleEmailVerification = () => {
+        sendEmailVerification(auth.currentUser)
+            .then(() => {
+                console.log("Email verification sent!")
+                // ...
+            })
+            .catch((error) => {
+                console.error(error)
+            })
+    }
+
     return (
         <main>
             <div className='py-5 w-100'>
@@ -63,7 +101,11 @@ export default function Login() {
                             <div className="col text-center">
                                 <h2 className="text-white">User Email: {user.email}</h2>
                                 <h2 className="text-white">User UID: {user.uid}</h2>
-                                <button className="btn btn-danger">Logout</button>
+                                <h2 className="text-white">User Display Name: {user.displayName}</h2>
+                                <button className="btn btn-danger" onClick={handleLogout}>Logout</button><br />
+                                <button className="btn btn-info my-3" onClick={showAuthUser}>Show Auth Current User</button><br />
+                                <button className="btn btn-success" onClick={handleUpdateProfile}>Update Profile</button><br />
+                                <button className="btn btn-light mt-3" onClick={handleEmailVerification}>Send Email Verification</button><br />
                             </div>
                         </div>
                         : <div className="row">
