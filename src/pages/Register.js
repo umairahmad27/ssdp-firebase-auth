@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../config/firebase"
+import { doc, setDoc } from "firebase/firestore/lite";
+import { auth, firestore } from "../config/firebase"
 
 const initialState = { email: "", password: "" }
 
@@ -27,6 +28,13 @@ function Register() {
                 console.log("User Registered")
                 console.log(userCredential)
                 console.log(user)
+
+                try {
+                    setDoc(doc(firestore, "users", user.uid), { fullName: "", uid: user.uid })
+                }
+                catch (e) {
+                    console.error(e)
+                }
                 // ...
             })
             .catch((error) => {

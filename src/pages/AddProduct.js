@@ -2,9 +2,9 @@ import React, { useState } from "react"
 import { collection, addDoc, doc, setDoc } from "firebase/firestore/lite";
 import { firestore } from "../config/firebase";
 
-const initialState = { fullName: "", age: "", country: "" }
+const initialState = { title: "", description: "", price: "" }
 
-export default function AddUser() {
+export default function AddProduct() {
 
     const [state, setState] = useState(initialState)
 
@@ -17,10 +17,29 @@ export default function AddUser() {
 
         console.log(state)
 
-        const { fullName, age, country } = state
+        let { title, description, price } = state
+
+        title = title.trim()
+        description = description.trim()
+        price = Number(price)
+
+        if (title.length < 3) {
+            alert("title ki length km hai")
+            return;
+        }
+        if (description.length < 10) {
+            alert("description ki length km hai")
+            return;
+        }
+        if (!price || price < 0) {
+            alert("price km hai")
+            return;
+        }
+
+        let formData = { title, description, price }
 
         try {
-            const docRef = await addDoc(collection(firestore, "users"), { fullName, age, country });
+            const docRef = await addDoc(collection(firestore, "products"), formData);
             console.log("Document written with ID: ", docRef.id);
         } catch (e) {
             console.error("Error adding document: ", e);
@@ -53,21 +72,21 @@ export default function AddUser() {
                     <div className="row">
                         <div className="col-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3">
                             <div className="card p-2 p-md-4 p-lg-5">
-                                <h2 className="text-center mb-4">Add User Form</h2>
+                                <h2 className="text-center mb-4">Add Product Form</h2>
                                 <form onSubmit={handleSubmit}>
                                     <div className="row mb-3">
                                         <div className="col">
-                                            <input type="text" className="form-control" placeholder="Full Name" name='fullName' onChange={handleChange} />
+                                            <input type="text" className="form-control" placeholder="Title" name='title' onChange={handleChange} />
                                         </div>
                                     </div>
                                     <div className="row mb-3">
                                         <div className="col">
-                                            <input type="number" className="form-control" placeholder="Age" name='age' onChange={handleChange} />
+                                            <input type="text" className="form-control" placeholder="Description" name='description' onChange={handleChange} />
                                         </div>
                                     </div>
                                     <div className="row mb-3">
                                         <div className="col">
-                                            <input type="text" className="form-control" placeholder="Country" name='country' onChange={handleChange} />
+                                            <input type="number" className="form-control" placeholder="Price" name='price' onChange={handleChange} />
                                         </div>
                                     </div>
                                     <div className="row">
